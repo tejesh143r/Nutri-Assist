@@ -9,11 +9,13 @@ import UserData from './pages/User/UserData';
 import SuggestedNutrition from './pages/Plans/SuggestedNutrition';
 import NewPlan from './pages/Plans/NewPlan';
 import NewSuggestion from './pages/Plans/NewSuggestion';
-import { Compass, Sparkles, ClipboardList } from 'lucide-react';
+import { Compass, Sparkles, ClipboardList, Menu, X } from 'lucide-react';
 
 export default function App() {
   const [authUser, setAuthUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -22,6 +24,12 @@ export default function App() {
       setAuthUser(JSON.parse(savedUser));
     }
     setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 16);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const handleLogout = () => {
@@ -38,7 +46,6 @@ export default function App() {
     );
   }
 
-  // Protected Route Wrapper
   const ProtectedRoute = ({ children }) => {
     if (!authUser) {
       return <Navigate to="/login" replace />;
@@ -53,183 +60,157 @@ export default function App() {
 
   return (
     <Router>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        
-        {/* Navigation header for public pages */}
+      <div className="app-shell">
         {!authUser && (
-          <header className="navbar">
-            <div className="container navbar-content">
-              <Link to="/" className="logo-container">
-                <div style={{ 
-                  width: '32px', 
-                  height: '32px', 
-                  borderRadius: '8px', 
-                  background: 'var(--primary-glow)', 
-                  color: 'var(--primary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  🍎
-                </div>
-                <span>Nutri<span style={{ color: 'var(--primary)' }}>Assist</span></span>
+          <header className={`site-header ${isScrolled ? 'is-scrolled' : ''}`}>
+            <div className="container nav-shell">
+              <Link to="/" className="brand-mark" aria-label="Nutri Assistant home">
+                <span className="brand-icon">N</span>
+                <span>Nutri<span className="brand-accent">Assistant</span></span>
               </Link>
 
-              <div style={{ display: 'flex', gap: '16px' }}>
-                <Link to="/login" className="nav-link">Sign In</Link>
-                <Link to="/register" className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
-                  Register
-                </Link>
+              <nav className={`nav-panel ${mobileMenuOpen ? 'open' : ''}`} aria-label="Main navigation">
+                <Link to="/#home" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+                <a href="#nutrition" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Nutrition</a>
+                <a href="#features" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Features</a>
+                <a href="#how-it-works" className="nav-link" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
+                <a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>About</a>
+              </nav>
+
+              <div className="nav-actions">
+                <Link to="/login" className="nav-login">Login</Link>
+                <Link to="/register" className="btn btn-primary nav-cta">Get Started</Link>
+                <button
+                  type="button"
+                  className="menu-toggle"
+                  aria-label="Toggle navigation menu"
+                  onClick={() => setMobileMenuOpen((prev) => !prev)}
+                >
+                  {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                </button>
               </div>
             </div>
           </header>
         )}
 
-        <div style={{ flex: 1 }}>
+        <main className="main-content">
           <Routes>
-            {/* Public Routes */}
-            <Route 
-              path="/" 
-              element={authUser ? <Navigate to="/dashboard" replace /> : <LandingPage />} 
-            />
-            <Route 
-              path="/login" 
-              element={authUser ? <Navigate to="/dashboard" replace /> : <Login setAuthUser={setAuthUser} />} 
-            />
-            <Route 
-              path="/register" 
-              element={authUser ? <Navigate to="/dashboard" replace /> : <Register setAuthUser={setAuthUser} />} 
-            />
+            <Route path="/" element={authUser ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+            <Route path="/login" element={authUser ? <Navigate to="/dashboard" replace /> : <Login setAuthUser={setAuthUser} />} />
+            <Route path="/register" element={authUser ? <Navigate to="/dashboard" replace /> : <Register setAuthUser={setAuthUser} />} />
 
-            {/* Protected Routes */}
-            <Route 
-              path="/dashboard" 
+            <Route
+              path="/dashboard"
               element={
                 <ProtectedRoute>
                   <Home authUser={authUser} />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/profile" 
+            <Route
+              path="/profile"
               element={
                 <ProtectedRoute>
                   <UserData authUser={authUser} setAuthUser={setAuthUser} />
                 </ProtectedRoute>
-              } 
+              }
             />
-            
-            {/* Plans Routes */}
-            <Route 
-              path="/plans" 
+
+            <Route
+              path="/plans"
               element={
                 <ProtectedRoute>
-                  {/* Tab Navigation header to toggle sub plan sheets */}
                   <div className="container" style={{ paddingTop: '24px' }}>
                     <div className="glass-card" style={{ padding: '10px 16px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                      <Link 
-                        to="/plans" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}
-                      >
+                      <Link to="/plans" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}>
                         <Compass size={16} /> View Recommendations
                       </Link>
-                      <Link 
-                        to="/plans/new" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}
-                      >
+                      <Link to="/plans/new" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
                         <ClipboardList size={16} /> Active Habits Planner
                       </Link>
-                      <Link 
-                        to="/plans/simulate" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}
-                      >
+                      <Link to="/plans/simulate" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
                         <Sparkles size={16} /> Quick Simulator
                       </Link>
                     </div>
                   </div>
                   <SuggestedNutrition />
                 </ProtectedRoute>
-              } 
+              }
             />
 
-            <Route 
-              path="/plans/new" 
+            <Route
+              path="/plans/new"
               element={
                 <ProtectedRoute>
                   <div className="container" style={{ paddingTop: '24px' }}>
                     <div className="glass-card" style={{ padding: '10px 16px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                      <Link 
-                        to="/plans" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}
-                      >
+                      <Link to="/plans" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
                         <Compass size={16} /> View Recommendations
                       </Link>
-                      <Link 
-                        to="/plans/new" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}
-                      >
+                      <Link to="/plans/new" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}>
                         <ClipboardList size={16} /> Active Habits Planner
                       </Link>
-                      <Link 
-                        to="/plans/simulate" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}
-                      >
+                      <Link to="/plans/simulate" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
                         <Sparkles size={16} /> Quick Simulator
                       </Link>
                     </div>
                   </div>
                   <NewPlan />
                 </ProtectedRoute>
-              } 
+              }
             />
 
-            <Route 
-              path="/plans/simulate" 
+            <Route
+              path="/plans/simulate"
               element={
                 <ProtectedRoute>
                   <div className="container" style={{ paddingTop: '24px' }}>
                     <div className="glass-card" style={{ padding: '10px 16px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                      <Link 
-                        to="/plans" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}
-                      >
+                      <Link to="/plans" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
                         <Compass size={16} /> View Recommendations
                       </Link>
-                      <Link 
-                        to="/plans/new" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}
-                      >
+                      <Link to="/plans/new" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
                         <ClipboardList size={16} /> Active Habits Planner
                       </Link>
-                      <Link 
-                        to="/plans/simulate" 
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}
-                      >
+                      <Link to="/plans/simulate" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}>
                         <Sparkles size={16} /> Quick Simulator
                       </Link>
                     </div>
                   </div>
                   <NewSuggestion authUser={authUser} />
                 </ProtectedRoute>
-              } 
+              }
             />
 
-            {/* Fallback Redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        </div>
+        </main>
 
-        {/* Global Footer */}
-        <footer style={{ 
-          padding: '24px 0', 
-          borderTop: '1px solid var(--glass-border)', 
-          background: 'rgba(10,15,13,0.9)', 
-          textAlign: 'center', 
-          fontSize: '0.85rem', 
-          color: 'var(--text-muted)' 
-        }}>
-          <div className="container">
-            <p>© {new Date().getFullYear()} NutriAssist. SmartBridge Internship Full Stack Project.</p>
+        <footer className="site-footer">
+          <div className="container footer-shell">
+            <div>
+              <h3>Nutri Assistant</h3>
+              <p>Intelligent nutrition for everyday life.</p>
+            </div>
+            <div>
+              <h4>Product</h4>
+              <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#nutrition">Nutrition</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4>Resources</h4>
+              <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Get Started</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="container copyright">
+            <p>© {new Date().getFullYear()} Nutri Assistant. All rights reserved.</p>
           </div>
         </footer>
       </div>

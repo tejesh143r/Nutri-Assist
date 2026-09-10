@@ -93,22 +93,46 @@ export default function NewPlan() {
     saveLogsToStorage(updatedLogs);
   };
 
-  // Helper: Calculate progress percentage
-  const getProgress = (plan) => {
-    const start = new Date(plan.startDate);
-    const end = new Date(plan.endDate);
-    const today = new Date();
-    
-    if (today < start) return 0;
-    if (today > end) return 100;
+  const parseLocalDate = (dateString) => {
+    if (!dateString) return null;
+    const [year, month, day] = dateString.split('-').map(Number);
+    if (!year || !month || !day) return null;
+    return new Date(year, month - 1, day);
+  };
 
-    const totalDuration = end - start;
-    const elapsed = today - start;
-    return Math.min(Math.round((elapsed / totalDuration) * 100), 100);
+  const formatDisplayDate = (dateString) => {
+    const parsedDate = parseLocalDate(dateString);
+    if (!parsedDate) return '—';
+
+    return parsedDate.toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   const getTodayDateString = () => {
-    return new Date().toISOString().split('T')[0];
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Helper: Calculate progress percentage
+  const getProgress = (plan) => {
+    const start = parseLocalDate(plan.startDate);
+    const end = parseLocalDate(plan.endDate);
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    if (!start || !end) return 0;
+    if (todayDate < start) return 0;
+    if (todayDate > end) return 100;
+
+    const totalDuration = end - start;
+    const elapsed = todayDate - start;
+    return Math.min(Math.round((elapsed / totalDuration) * 100), 100);
   };
 
   return (
@@ -219,7 +243,7 @@ export default function NewPlan() {
                         <div>
                           <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}>{plan.name}</h3>
                           <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                            Focus: <b>{plan.goal}</b> ({new Date(plan.startDate).toLocaleDateString()} - {new Date(plan.endDate).toLocaleDateString()})
+                            Focus: <b>{plan.goal}</b> ({formatDisplayDate(plan.startDate)} - {formatDisplayDate(plan.endDate)})
                           </span>
                         </div>
                         <button 
@@ -250,7 +274,7 @@ export default function NewPlan() {
                       {/* Daily Habits Adherence Checklist */}
                       <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '16px' }}>
                         <h4 style={{ fontSize: '0.9rem', marginBottom: '12px', color: 'var(--text-secondary)' }}>
-                          Daily Habits Check (Today: {new Date().toLocaleDateString()})
+                          Daily Habits Check (Today: {formatDisplayDate(todayStr)})
                         </h4>
                         
                         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>

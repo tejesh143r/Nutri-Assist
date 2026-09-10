@@ -11,62 +11,46 @@ export default function LNavbar({ authUser, onLogout }) {
   };
 
   return (
-    <nav className="navbar">
+    <nav className="app-navbar">
       <div className="container navbar-content">
         <NavLink to="/dashboard" className="logo-container">
-          <div style={{ 
-            width: '32px', 
-            height: '32px', 
-            borderRadius: '8px', 
-            background: 'var(--primary-glow)', 
-            color: 'var(--primary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+          <div className="brand-icon-box">
             <Apple size={18} />
           </div>
-          <span>Nutri<span style={{ color: 'var(--primary)' }}>Assist</span></span>
+          <span>Nutri<span className="brand-accent">Assist</span></span>
         </NavLink>
 
         <ul className="nav-links">
           <li>
-            <NavLink 
-              to="/dashboard" 
-              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) => isActive ? 'nav-link active nav-link-item' : 'nav-link nav-link-item'}
             >
               <LayoutDashboard size={16} /> Dashboard
             </NavLink>
           </li>
           <li>
-            <NavLink 
-              to="/plans" 
-              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            <NavLink
+              to="/plans"
+              className={({ isActive }) => isActive ? 'nav-link active nav-link-item' : 'nav-link nav-link-item'}
             >
               <Compass size={16} /> Recommendations
             </NavLink>
           </li>
           <li>
-            <NavLink 
-              to="/profile" 
-              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            <NavLink
+              to="/profile"
+              className={({ isActive }) => isActive ? 'nav-link active nav-link-item' : 'nav-link nav-link-item'}
             >
               <User size={16} /> Profile
             </NavLink>
           </li>
           {authUser && (
-            <li style={{ display: 'flex', alignItems: 'center', gap: '12px', borderLeft: '1px solid var(--glass-border)', paddingLeft: '20px' }}>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                Hi, <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{authUser.username}</span>
+            <li className="user-menu-item">
+              <span className="welcome-label">
+                Hi, <span className="welcome-username">{authUser.username}</span>
               </span>
-              <button 
-                onClick={handleLogout}
-                className="btn btn-secondary" 
-                style={{ padding: '6px 12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-              >
+              <button onClick={handleLogout} className="btn btn-secondary nav-logout-btn">
                 <LogOut size={14} /> Log Out
               </button>
             </li>

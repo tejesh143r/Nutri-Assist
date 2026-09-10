@@ -66,18 +66,17 @@ export default function Home({ authUser }) {
   }
 
   return (
-    <div className="container animate-fade-in" style={{ padding: '40px 24px' }}>
-      {/* Header Summary */}
-      <div className="flex-between" style={{ marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
+    <div className="container animate-fade-in dashboard-shell" style={{ padding: '40px 24px' }}>
+      <div className="dashboard-header">
         <div>
           <h1 style={{ fontSize: '2rem' }}>Welcome Back, <span className="gradient-text">{authUser?.username}</span></h1>
           <p style={{ color: 'var(--text-secondary)', marginTop: '4px' }}>
             Here is your personalized nutritional summary and targets.
           </p>
         </div>
-        
-        <button 
-          onClick={handleGenerate} 
+
+        <button
+          onClick={handleGenerate}
           disabled={generating}
           className="btn btn-primary"
           style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
@@ -126,49 +125,40 @@ export default function Home({ authUser }) {
           
           {/* Top Cards Row */}
           <div className="grid-3">
-            
-            {/* BMI Card */}
-            <div className="glass-card flex-between">
-              <div>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, uppercase: 'true' }}>BODY MASS INDEX</span>
-                <h2 style={{ fontSize: '2.5rem', margin: '8px 0 4px', fontWeight: 800 }}>{latestSuggestion.bmi}</h2>
-                <span style={{ 
-                  fontSize: '0.85rem', 
-                  fontWeight: 600, 
-                  color: getBmiCategory(latestSuggestion.bmi).color 
-                }}>
+            <div className="glass-card metric-card">
+              <div className="metric-copy">
+                <span className="metric-label">BODY MASS INDEX</span>
+                <h2 className="metric-value">{latestSuggestion.bmi}</h2>
+                <span className="metric-detail" style={{ color: getBmiCategory(latestSuggestion.bmi).color }}>
                   {getBmiCategory(latestSuggestion.bmi).label}
                 </span>
               </div>
-              <div style={{ color: 'var(--accent)', background: 'var(--accent-glow)', padding: '12px', borderRadius: '12px' }}>
+              <div className="metric-icon metric-icon-accent">
                 <Scale size={28} />
               </div>
             </div>
 
-            {/* BMR Card */}
-            <div className="glass-card flex-between">
-              <div>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>BASAL METABOLIC RATE</span>
-                <h2 style={{ fontSize: '2.5rem', margin: '8px 0 4px', fontWeight: 800 }}>{latestSuggestion.bmr}</h2>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>kcal/day baseline</span>
+            <div className="glass-card metric-card">
+              <div className="metric-copy">
+                <span className="metric-label">BASAL METABOLIC RATE</span>
+                <h2 className="metric-value">{latestSuggestion.bmr}</h2>
+                <span className="metric-detail">kcal/day baseline</span>
               </div>
-              <div style={{ color: 'var(--warning)', background: 'rgba(251,191,36,0.08)', padding: '12px', borderRadius: '12px' }}>
+              <div className="metric-icon metric-icon-warn">
                 <Flame size={28} />
               </div>
             </div>
 
-            {/* TDEE Card */}
-            <div className="glass-card flex-between">
-              <div>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>DAILY EXPENDITURE (TDEE)</span>
-                <h2 style={{ fontSize: '2.5rem', margin: '8px 0 4px', fontWeight: 800 }}>{latestSuggestion.tdee}</h2>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>active calories output</span>
+            <div className="glass-card metric-card">
+              <div className="metric-copy">
+                <span className="metric-label">DAILY EXPENDITURE (TDEE)</span>
+                <h2 className="metric-value">{latestSuggestion.tdee}</h2>
+                <span className="metric-detail">active calories output</span>
               </div>
-              <div style={{ color: 'var(--primary)', background: 'var(--primary-glow)', padding: '12px', borderRadius: '12px' }}>
+              <div className="metric-icon metric-icon-primary">
                 <Dumbbell size={28} />
               </div>
             </div>
-
           </div>
 
           {/* Macro Breakdown & Targets */}
