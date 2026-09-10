@@ -120,15 +120,15 @@ export default function App() {
               path="/plans"
               element={
                 <ProtectedRoute>
-                  <div className="container" style={{ paddingTop: '24px' }}>
-                    <div className="glass-card" style={{ padding: '10px 16px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                      <Link to="/plans" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}>
+                  <div className="container subnav-container">
+                    <div className="glass-card subnav-tab-bar">
+                      <Link to="/plans" className="subnav-tab active">
                         <Compass size={16} /> View Recommendations
                       </Link>
-                      <Link to="/plans/new" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
+                      <Link to="/plans/new" className="subnav-tab">
                         <ClipboardList size={16} /> Active Habits Planner
                       </Link>
-                      <Link to="/plans/simulate" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
+                      <Link to="/plans/simulate" className="subnav-tab">
                         <Sparkles size={16} /> Quick Simulator
                       </Link>
                     </div>
@@ -142,15 +142,15 @@ export default function App() {
               path="/plans/new"
               element={
                 <ProtectedRoute>
-                  <div className="container" style={{ paddingTop: '24px' }}>
-                    <div className="glass-card" style={{ padding: '10px 16px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                      <Link to="/plans" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
+                  <div className="container subnav-container">
+                    <div className="glass-card subnav-tab-bar">
+                      <Link to="/plans" className="subnav-tab">
                         <Compass size={16} /> View Recommendations
                       </Link>
-                      <Link to="/plans/new" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}>
+                      <Link to="/plans/new" className="subnav-tab active">
                         <ClipboardList size={16} /> Active Habits Planner
                       </Link>
-                      <Link to="/plans/simulate" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
+                      <Link to="/plans/simulate" className="subnav-tab">
                         <Sparkles size={16} /> Quick Simulator
                       </Link>
                     </div>
@@ -164,15 +164,15 @@ export default function App() {
               path="/plans/simulate"
               element={
                 <ProtectedRoute>
-                  <div className="container" style={{ paddingTop: '24px' }}>
-                    <div className="glass-card" style={{ padding: '10px 16px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                      <Link to="/plans" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
+                  <div className="container subnav-container">
+                    <div className="glass-card subnav-tab-bar">
+                      <Link to="/plans" className="subnav-tab">
                         <Compass size={16} /> View Recommendations
                       </Link>
-                      <Link to="/plans/new" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
+                      <Link to="/plans/new" className="subnav-tab">
                         <ClipboardList size={16} /> Active Habits Planner
                       </Link>
-                      <Link to="/plans/simulate" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}>
+                      <Link to="/plans/simulate" className="subnav-tab active">
                         <Sparkles size={16} /> Quick Simulator
                       </Link>
                     </div>
