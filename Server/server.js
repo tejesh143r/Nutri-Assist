@@ -7,9 +7,24 @@ require('dotenv').config();
 connectDB();
 
 const app = express();
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+].filter(Boolean);
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error('Origin not allowed by CORS'));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // Main Root endpoint for API sanity check
